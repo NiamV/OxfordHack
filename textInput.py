@@ -14,7 +14,8 @@ screen = pg.display.set_mode(screenSize)
 COLOR_INACTIVE = pg.Color('lightskyblue3')
 COLOR_ACTIVE = pg.Color('dodgerblue2')
 COLOR_MAIN = pg.Color('azure')
-FONT = pg.font.Font(None, 32)
+FONT_SIZE = 32
+FONT = pg.font.Font(None, FONT_SIZE)
 TITLE_FONT = pg.font.Font(None, 80)
 
 LEFT_MARGIN = 100
@@ -33,7 +34,7 @@ class Question:
         self.img = img
         self.goal_text = goal_text
 
-        self.inputBox = InputBox(LEFT_MARGIN, LEFT_MARGIN + 200, screenWidth - (2 * LEFT_MARGIN), 32)
+        self.inputBox = InputBox(LEFT_MARGIN, LEFT_MARGIN + 200, screenWidth - (2 * LEFT_MARGIN), FONT_SIZE)
 
     def draw(self, screen): 
         # Draw the goal image
@@ -84,10 +85,10 @@ class InputBox:
 
     def __init__(self, x, y, w, h, text=''):
         self.rect = pg.Rect(x, y, w, h)
-        self.color = COLOR_INACTIVE
+        self.color = COLOR_ACTIVE
         self.text = text
         self.txt_surface = FONT.render(text, True, self.color)
-        self.active = False
+        self.active = True
 
     def handle_event(self, event):
         if event.type == pg.MOUSEBUTTONDOWN:
@@ -114,7 +115,7 @@ class InputBox:
 
     def update(self):
         # Resize the box if the text is too long.
-        width = max(200, self.txt_surface.get_width()+10)
+        width = max(self.rect.w, self.txt_surface.get_width()+10)
         self.rect.w = width
 
     def draw(self, screen):
@@ -129,34 +130,55 @@ def secondsToString(secs):
 
     return '{:d}:{:02d}:{:02d}'.format(h, m, s)
 
+def numPerms (n, p):
+    if n - p == 0:
+        return 1
+    else:
+        return n * numPerms(n-1, p)
+
 def main():
     clock = pg.time.Clock()
     done = False
     
+    # Ensures that the game does not close before the user tells it to
     while not done:
         # Title Screen
-        buttons = [ Button(LEFT_MARGIN, LEFT_MARGIN + 100 + 100 * i, 85, 32, "Level " + str(i+1)) for i in range(NUM_LEVELS) ]
+        SPACING = 60
+        buttons = [ Button(LEFT_MARGIN, LEFT_MARGIN + 100 + SPACING * i, 85, FONT_SIZE, "Level " + str(i+1)) for i in range(NUM_LEVELS) ]
+        seedY = buttons[-1].rect.y + FONT_SIZE + SPACING
+        seedInput = InputBox(LEFT_MARGIN + 70, seedY - 5, 30, FONT_SIZE)
         notSelected = True
         level = 0
 
+        def isValidSeed (s):
+            return s > 0 and s <= numPerms(imageCount, GAME_LENGTH)
+
+        # Keeps user on Title Screen until a level is selected
         while notSelected:
             for event in pg.event.get():
                 if event.type == pg.QUIT:
                     sys.exit("Game closed")
+                seedInput.handle_event(event)
                 for button in buttons:
                     button.handle_event(event)
+                    if button.active:
+                        # Sets 'level' to the selected variable and exits the title screen
+                        level = int(button.text[-1])
+                        notSelected = False
+                        break
 
+            # Clears screen
             screen.fill((30, 30, 30))
 
+            # Blits game name and buttons
+            screen.blit(TITLE_FONT.render("Rapid TeXing", True, COLOR_MAIN), (LEFT_MARGIN, LEFT_MARGIN))
+            screen.blit(FONT.render("Seed: ", True, COLOR_MAIN), (LEFT_MARGIN, seedY))
+            seedInput.update()
+            seedInput.draw(screen)
             for button in buttons:
                 button.draw(screen)
-                if button.active:
-                    # Sets 'level' to the selected variable and exits the title screen
-                    level = int(button.text[-1])
-                    notSelected = False
-                    break
 
-            screen.blit(TITLE_FONT.render("Rapid TeXing", True, COLOR_MAIN), (LEFT_MARGIN, LEFT_MARGIN))
+            # Refreshes display
             pg.display.flip()
 
         # Stopwatch setup
@@ -166,7 +188,10 @@ def main():
 
         # Sets the number of problems done to 0
         count = 0
-        n = random.randint(1,imageCount*(imageCount-1)*(imageCount-2))
+        if (isValidSeed(int(seedInput.text))):
+            n = int(seedInput.text)
+        else:
+            n = random.randint(1,imageCount*(imageCount-1)*(imageCount-2))
         threeImages =  imageMapping.images(n, imageCount) # 3-tuple with the 3 id ints
         eqImg = [pg.image.load("static/Eq" + str(threeImages[i]) + ".png") for i in range(0,3) ]
         eqTxt = [equationsFile[threeImages[i]-1] for i in range(0,3) ]
