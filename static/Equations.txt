@@ -1,0 +1,8 @@
+$$ \int_{0}^{10}{x^2 dx} $$
+$$ \frac{x^2}{x^3 + 1} $$
+$$ a^2 + b^2 = c^2 $$
+$$ \sqrt{x^2 + sin(x)} $$
+$$ \sum_{n=0}^{\infty}\frac{1}{x^2} = \frac{\pi^2}{6} $$
+$$ \prod_{p \in primes} \frac{1}{p} $$
+$$ \sin (A+B) = \sin (A) \cos (B) + \sin (B) \cos (A) $$
+$$ \frac{1}{1-x} = 1 + x + x^2 + x^3 + ... $$
