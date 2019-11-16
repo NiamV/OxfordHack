@@ -9,6 +9,8 @@ clock = pygame.time.Clock()
 
 done = False
 
+imageCount = 8
+
 my_image = pygame.image.load("static/Eq1.png")
 my_image_x = 0
 my_image_y = 0
@@ -18,6 +20,9 @@ while not done:
         for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                         done = True
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_SPACE:
+                        pass
 
         pygame.display.flip()
         
