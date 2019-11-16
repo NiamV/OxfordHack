@@ -28,7 +28,6 @@ while not done:
                     done = True
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
-                    print(count)
                     count += 1
                     if count > 3:
                         done = True
