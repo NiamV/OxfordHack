@@ -16,26 +16,31 @@ COLOR_MAIN = pg.Color('azure')
 FONT = pg.font.Font(None, 32)
 
 LEFT_MARGIN = 100
+GAME_LENGTH = 3
+
+# Niam's variables
+imageCount = 8
+equationsFile = open("static/Equations.txt", "r").read().splitlines()
 
 # Untested
 class Question:
 
-    def __init__(self, number, img, img_id):
+    def __init__(self, number, img, goal_text):
         self.color = COLOR_MAIN
         self.img = img
+        self.goal_text = goal_text
 
-        self.w = screenWidth - (2 * LEFT_MARGIN)
-        self.h = 32
-        self.x = LEFT_MARGIN
-        self.y = LEFT_MARGIN + (200 * number)
-        self.inputBox = InputBox(self.x, self.y + (2 * h), self.w, self.h)
+        self.inputBox = InputBox(LEFT_MARGIN, LEFT_MARGIN + 200, screenWidth - (2 * LEFT_MARGIN), 32)
 
     def draw(self, screen): 
         # Draw the goal image
-        screen.blit(img, (LEFT_MARGIN, LEFT_MARGIN))
+        screen.blit(self.img, (LEFT_MARGIN, LEFT_MARGIN))
 
         # Draw the input box
         self.inputBox.draw(screen)
+
+    def handle_event(self, event):
+        self.inputBox.handle_event(event)
 
 
 class InputBox:
@@ -86,53 +91,87 @@ def secondsToString(secs):
 
     return '{:d}:{:02d}:{:02d}'.format(h, m, s)
 
+# def newGame():
+#     count = 0
+#     n = random.randint(1,imageCount*(imageCount-1)*(imageCount-2))
+#     threeImages =  imageMapping.images(n, imageCount) # 3-tuple with the 3 id ints
+#     eqImg = [pg.image.load("static/Eq" + str(threeImages[i]) + ".png") for i in range(0,3) ]
+#     eqTxt = [equationsFile[threeImages[i]-1] for i in range(0,3) ]
+
+#     questions = [ Question(i, eqImg[i], eqTxt[i]) for i in range(GAME_LENGTH)]
+
+#     while not done:
+#         for event in pg.event.get():
+#                 if event.type == pg.QUIT:
+#                         done = True
+#                 if event.type == pg.KEYDOWN:
+#                     if event.key == pg.K_SPACE:
+#                         count += 1
+#                         if count > 3:
+#                             done = True
+#                             break
+#                         # Clear screen
+#                         screen.fill((0,0,0)) 
+#                         # Add next image
+#                         screen.blit(eqImg[count-1], (0, 0))
+
 def main():
     clock = pg.time.Clock()
-    input_box1 = InputBox(100, 100, 140, 32)
-    input_box2 = InputBox(100, 300, 140, 32)
-    input_boxes = [input_box1, input_box2]
     done = False
-    imageCount = 8
-    images = []
-
-    # Stopwatch setup
-    counter = 0
-    timerText = secondsToString(counter).rjust(3)
-    pg.time.set_timer(pg.USEREVENT, 1000)
 
     while not done:
-        for event in pg.event.get():
-            if event.type == pg.QUIT:
-                done = True
-            if event.type == pg.USEREVENT: 
-                counter += 1
-                timerText = secondsToString(counter).rjust(3) if counter > 0 else 'boom!'
-            if event.type == pg.KEYDOWN:
-                # niamPygame.py
-                if event.key == pg.K_SPACE:
-                    n = random.randint(1,imageCount*(imageCount-1)*(imageCount-2))
-                    images =  imageMapping.images(n, imageCount)
-                # end
+        # Stopwatch setup
+        counter = 0
+        timerText = secondsToString(counter).rjust(3)
+        pg.time.set_timer(pg.USEREVENT, 1000)
 
-            for box in input_boxes:
-                box.handle_event(event)
+        count = 0
+        n = random.randint(1,imageCount*(imageCount-1)*(imageCount-2))
+        threeImages =  imageMapping.images(n, imageCount) # 3-tuple with the 3 id ints
+        eqImg = [pg.image.load("static/Eq" + str(threeImages[i]) + ".png") for i in range(0,3) ]
+        eqTxt = [equationsFile[threeImages[i]-1] for i in range(0,3) ]
 
-        for box in input_boxes:
-            box.update()
+        questions = [ Question(i, eqImg[i], eqTxt[i]) for i in range(GAME_LENGTH)]
 
-        # Updates UI
-        screen.fill((30, 30, 30))
-        for box in input_boxes:
-            box.draw(screen)
-        for i in range(len(images)):
-            eq = pg.image.load("static/Eq" + str(images[i]) + ".png")
-            y = 300 * i
-            screen.blit(eq, (0,y))
+        gameDone = False
 
-        screen.blit(FONT.render(timerText, True, COLOR_MAIN), (screenWidth - 150, 40))
+        while not gameDone:
+            for event in pg.event.get():
+                if event.type == pg.QUIT:
+                    done = True
+                    break
+                if event.type == pg.USEREVENT: 
+                    counter += 1
+                    timerText = secondsToString(counter).rjust(3)
+                if event.type == pg.KEYDOWN:
+                    if event.key == pg.K_RETURN:
+                        count += 1
+                        if count >= GAME_LENGTH:
+                            gameDone = True
+                            break 
+                        # # Add next image
+                        # screen.blit(eqImg[count-1], (0, 0))
 
-        pg.display.flip()
-        clock.tick(30)
+                questions[count].inputBox.handle_event(event)
+            
+            # UI Updates
+            screen.fill((30, 30, 30))
+
+            # Bad fix
+            if gameDone:
+                # Shows endgame screen
+                screen.blit(FONT.render("You're done!", True, COLOR_MAIN), (screenWidth - 150, 40))
+                
+                break
+            else:
+                # Refreshes inputbox size, clears screen, and displays question and timer
+                questions[count].inputBox.update()
+                questions[count].draw(screen)
+
+                screen.blit(FONT.render(timerText, True, COLOR_MAIN), (screenWidth - 150, 40))
+
+            pg.display.flip()
+            clock.tick(30)
 
 
 if __name__ == '__main__':

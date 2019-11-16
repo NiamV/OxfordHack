@@ -1,5 +1,6 @@
 import math
 
+# Returns the 3-tuple containing the image ids (ints)
 def images(n, imageCount):
   numbers = [i for i in range(1,imageCount+1)]
   img1 = int(math.ceil(n / ((imageCount-1)*(imageCount-2))))
