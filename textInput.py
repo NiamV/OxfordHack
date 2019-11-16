@@ -45,6 +45,7 @@ class Question:
 
     def isCorrect(self):
         return checker.checker(self.goal_text, self.inputBox.text)
+        #return True
 
 
 class InputBox:
@@ -153,6 +154,8 @@ def main():
                         if questions[count].isCorrect():
                             count += 1
                             if count >= GAME_LENGTH:
+                                endtime = timerText
+                                print(endtime)
                                 gameDone = True
                                 break
                             else:
@@ -175,6 +178,7 @@ def main():
             except IndexError:
                 # Shows endgame screen
                 screen.blit(FONT.render("You're done!", True, COLOR_MAIN), (LEFT_MARGIN, LEFT_MARGIN))
+                screen.blit(FONT.render("You took this " + endtime, True, COLOR_MAIN), (LEFT_MARGIN, LEFT_MARGIN + 100))
                 pg.display.flip()
                 notQuiteDone = True
 
