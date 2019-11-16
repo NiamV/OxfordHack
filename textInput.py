@@ -6,8 +6,8 @@ import random
 
 pg.init()
 
-screenWidth = 640
-screenHeight = 480
+screenWidth = 1000
+screenHeight = 750
 screenSize = (screenWidth, screenHeight)
 screen = pg.display.set_mode(screenSize)
 COLOR_INACTIVE = pg.Color('lightskyblue3')
@@ -139,6 +139,7 @@ def main():
             for event in pg.event.get():
                 if event.type == pg.QUIT:
                     done = True
+                    gameDone = True
                     break
                 if event.type == pg.USEREVENT: 
                     counter += 1
@@ -157,18 +158,34 @@ def main():
             # UI Updates
             screen.fill((30, 30, 30))
 
-            # Bad fix
-            if gameDone:
-                # Shows endgame screen
-                screen.blit(FONT.render("You're done!", True, COLOR_MAIN), (screenWidth - 150, 40))
-                
-                break
-            else:
+
+            try:
                 # Refreshes inputbox size, clears screen, and displays question and timer
                 questions[count].inputBox.update()
                 questions[count].draw(screen)
 
                 screen.blit(FONT.render(timerText, True, COLOR_MAIN), (screenWidth - 150, 40))
+            except IndexError:
+                # Shows endgame screen
+                screen.blit(FONT.render("You're done!", True, COLOR_MAIN), (LEFT_MARGIN, LEFT_MARGIN))
+                pg.display.flip()
+                notQuiteDone = True
+
+                # BAD FIX!
+                while notQuiteDone:
+                    for event in pg.event.get():
+                        if event.type == pg.QUIT:
+                            done = True
+                            gameDone = True
+                            notQuiteDone = False
+                            break
+                        if event.type == pg.KEYDOWN:
+                            if event.key == pg.K_RETURN:
+                                notQuiteDone = False
+                                break
+
+                print("got to end screen")
+                
 
             pg.display.flip()
             clock.tick(30)
