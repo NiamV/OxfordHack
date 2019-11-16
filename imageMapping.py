@@ -5,10 +5,10 @@ def images(n, imageCount):
   img1 = math.ceil(n / ((imageCount-1)*(imageCount-2)))
   numbers.remove(img1)
 
-  img2 = numbers[math.ceil((n % ((imageCount-1)*(imageCount-2))) / (imageCount-2))-1]
+  img2 = numbers[int(math.ceil((n % ((imageCount-1)*(imageCount-2))) / (imageCount-2))-1)]
   numbers.remove(img2)
 
-  img3 = numbers[math.ceil( (n % (imageCount-2)))-1]
+  img3 = numbers[int(math.ceil( (n % (imageCount-2)))-1)]
 
   return img1, img2, img3
 
