@@ -2,10 +2,37 @@ import pygame as pg
 
 pg.init()
 
-screen = pg.display.set_mode((640, 480))
+screenWidth = 640
+screenHeight = 480
+screenSize = (screenWidth, screenHeight)
+screen = pg.display.set_mode(screenSize)
 COLOR_INACTIVE = pg.Color('lightskyblue3')
 COLOR_ACTIVE = pg.Color('dodgerblue2')
+COLOR_MAIN = pg.Color('azure')
 FONT = pg.font.Font(None, 32)
+
+LEFT_MARGIN = 100
+
+# Untested
+class Question:
+
+    def __init__(self, goal, number):
+        self.goal = goal
+        self.color = COLOR_MAIN
+        self.rendered = FONT.render(goal, True, self.color)
+
+        self.w = screenWidth - (2 * LEFT_MARGIN)
+        self.h = 32
+        self.x = LEFT_MARGIN
+        self.y = LEFT_MARGIN + (200 * number)
+        self.inputBox = InputBox(self.x, self.y + (2 * h), self.w, self.h)
+
+    def draw(self, screen): 
+        # Draw the goal text
+        screen.blit(self.rendered, (self.x, self.y))
+
+        # Draw the input box
+        self.inputBox.draw(screen)
 
 
 class InputBox:
@@ -50,8 +77,6 @@ class InputBox:
         # Blit the rect.
         pg.draw.rect(screen, self.color, self.rect, 2)
 
-
-
 def main():
     clock = pg.time.Clock()
     input_box1 = InputBox(100, 100, 140, 32)
@@ -80,7 +105,7 @@ def main():
         screen.fill((30, 30, 30))
         for box in input_boxes:
             box.draw(screen)
-        screen.blit(FONT.render(timerText, True, (0, 0, 0)), (32, 48))
+        screen.blit(FONT.render(timerText, True, COLOR_MAIN), (screenWidth - 150, 40))
 
         pg.display.flip()
         clock.tick(30)
