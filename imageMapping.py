@@ -7,7 +7,7 @@ def imageId(n, imageCount, sampleSize, index):
   den = math.factorial(8 - index) / math.factorial(8 - sampleSize)
   return math.ceil(num / den)
 
-def images2(n, imageCount, sampleSize):
+def images(n, imageCount, sampleSize):
   numbers = [i for i in range(1, imageCount+1)]
   indexes = []
   for i in range(1,sampleSize + 1):
