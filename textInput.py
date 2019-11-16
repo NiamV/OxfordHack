@@ -127,34 +127,38 @@ def main():
     clock = pg.time.Clock()
     done = False
     
-    buttons = [ Button(LEFT_MARGIN, LEFT_MARGIN + 100 + 100 * i, 85, 32, "Level " + str(i+1)) for i in range(NUM_LEVELS) ]
-    notSelected = True
-    while notSelected:
-        for event in pg.event.get():
-            if event.type == pg.QUIT:
-                sys.exit("Game closed")
-            for button in buttons:
-                button.handle_event(event)
-
-        screen.fill((30, 30, 30))
-
-        for button in buttons:
-            button.draw(screen)
-            if button.active:
-                notSelected = False
-                break
-
-        screen.blit(TITLE_FONT.render("Rapid TeXing", True, COLOR_MAIN), (LEFT_MARGIN, LEFT_MARGIN))
-        pg.display.flip()
-        
-
-
     while not done:
+        # Title Screen
+        buttons = [ Button(LEFT_MARGIN, LEFT_MARGIN + 100 + 100 * i, 85, 32, "Level " + str(i+1)) for i in range(NUM_LEVELS) ]
+        notSelected = True
+        level = 0
+
+        while notSelected:
+            for event in pg.event.get():
+                if event.type == pg.QUIT:
+                    sys.exit("Game closed")
+                for button in buttons:
+                    button.handle_event(event)
+
+            screen.fill((30, 30, 30))
+
+            for button in buttons:
+                button.draw(screen)
+                if button.active:
+                    # Sets 'level' to the selected variable and exits the title screen
+                    level = int(button.text[-1])
+                    notSelected = False
+                    break
+
+            screen.blit(TITLE_FONT.render("Rapid TeXing", True, COLOR_MAIN), (LEFT_MARGIN, LEFT_MARGIN))
+            pg.display.flip()
+
         # Stopwatch setup
         counter = 0
         timerText = secondsToString(counter).rjust(3)
         pg.time.set_timer(pg.USEREVENT, 1000)
 
+        # Sets the number of problems done to 0
         count = 0
         n = random.randint(1,imageCount*(imageCount-1)*(imageCount-2))
         threeImages =  imageMapping.images(n, imageCount) # 3-tuple with the 3 id ints
