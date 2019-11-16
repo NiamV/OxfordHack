@@ -12,7 +12,7 @@ def images(n, imageCount, sampleSize):
   indexes = []
   for i in range(1,sampleSize + 1):
     index = imageId(n, imageCount, sampleSize, i)
-    location = numbers[index-1]
+    location = numbers[int(index-1)]
     indexes.append(location)
     numbers.remove(location)
   return indexes

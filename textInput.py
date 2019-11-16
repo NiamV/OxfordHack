@@ -188,9 +188,12 @@ def main():
 
         # Sets the number of problems done to 0
         count = 0
-        if (isValidSeed(int(seedInput.text))):
-            n = int(seedInput.text)
-        else:
+        try:
+            if (isValidSeed(int(seedInput.text))):
+                n = int(seedInput.text)
+            else:
+                n = random.randint(1,imageCount*(imageCount-1)*(imageCount-2))
+        except:
             n = random.randint(1,imageCount*(imageCount-1)*(imageCount-2))
         threeImages =  imageMapping.images(n, imageCount, GAME_LENGTH) # 3-tuple with the 3 id ints
         eqImg = [pg.image.load("static/Eq" + str(threeImages[i]) + ".png") for i in range(0,GAME_LENGTH) ]
