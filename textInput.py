@@ -17,6 +17,7 @@ FONT = pg.font.Font(None, 32)
 
 LEFT_MARGIN = 100
 GAME_LENGTH = 3
+NUM_LEVELS = 3
 
 # Niam's variables
 imageCount = 8
@@ -42,6 +43,36 @@ class Question:
     def handle_event(self, event):
         self.inputBox.handle_event(event)
 
+
+class Button:
+    def __init__(self, x, y, w, h, text=''):
+        self.rect = pg.Rect(x, y, w, h)
+        self.color = COLOR_INACTIVE
+        self.text = text
+        self.txt_surface = FONT.render(text, True, self.color)
+        self.active = False
+
+    def handle_event(self, event):
+        if event.type == pg.MOUSEBUTTONDOWN:
+            # If the user clicked on the input_box rect.
+            if self.rect.collidepoint(event.pos):
+                # Toggle the active variable.
+                self.active = not self.active
+            else:
+                self.active = False
+            # Change the current color of the input box.
+            self.color = COLOR_ACTIVE if self.active else COLOR_INACTIVE
+
+    def update(self):
+        # Resize the box if the text is too long.
+        width = max(200, self.txt_surface.get_width()+10)
+        self.rect.w = width
+
+    def draw(self, screen):
+        # Blit the text.
+        screen.blit(self.txt_surface, (self.rect.x+5, self.rect.y+5))
+        # Blit the rect.
+        pg.draw.rect(screen, self.color, self.rect, 2)
 
 class InputBox:
 
@@ -91,33 +122,28 @@ def secondsToString(secs):
 
     return '{:d}:{:02d}:{:02d}'.format(h, m, s)
 
-# def newGame():
-#     count = 0
-#     n = random.randint(1,imageCount*(imageCount-1)*(imageCount-2))
-#     threeImages =  imageMapping.images(n, imageCount) # 3-tuple with the 3 id ints
-#     eqImg = [pg.image.load("static/Eq" + str(threeImages[i]) + ".png") for i in range(0,3) ]
-#     eqTxt = [equationsFile[threeImages[i]-1] for i in range(0,3) ]
-
-#     questions = [ Question(i, eqImg[i], eqTxt[i]) for i in range(GAME_LENGTH)]
-
-#     while not done:
-#         for event in pg.event.get():
-#                 if event.type == pg.QUIT:
-#                         done = True
-#                 if event.type == pg.KEYDOWN:
-#                     if event.key == pg.K_SPACE:
-#                         count += 1
-#                         if count > 3:
-#                             done = True
-#                             break
-#                         # Clear screen
-#                         screen.fill((0,0,0)) 
-#                         # Add next image
-#                         screen.blit(eqImg[count-1], (0, 0))
-
 def main():
     clock = pg.time.Clock()
     done = False
+    
+    buttons = [ Button(LEFT_MARGIN, LEFT_MARGIN + 200 + 100 * i, screenWidth - (2 * LEFT_MARGIN), 32, "Level " + str(i+1)) for i in range(NUM_LEVELS)]
+    notSelected = True
+    while notSelected:
+        for event in pg.event.get():
+            if event.type == pg.QUIT:
+                sys.exit("Game closed")
+            for button in buttons:
+                button.handle_event(event)
+                button.draw(screen)
+                if button.active:
+                    notSelected = False
+
+            
+        screen.fill((30, 30, 30))
+        screen.blit(FONT.render("Rapid TeXing", True, COLOR_MAIN), (LEFT_MARGIN, LEFT_MARGIN))
+        pg.display.flip()
+        
+
 
     while not done:
         # Stopwatch setup
@@ -138,14 +164,14 @@ def main():
         while not gameDone:
             for event in pg.event.get():
                 if event.type == pg.QUIT:
-                    done = True
-                    gameDone = True
-                    break
+                    sys.exit("Game closed")
                 if event.type == pg.USEREVENT: 
                     counter += 1
                     timerText = secondsToString(counter).rjust(3)
                 if event.type == pg.KEYDOWN:
                     if event.key == pg.K_RETURN:
+                        # if text input is correct, augment count by 1
+                        # if checker(questions[count])
                         count += 1
                         if count >= GAME_LENGTH:
                             gameDone = True
@@ -171,20 +197,16 @@ def main():
                 pg.display.flip()
                 notQuiteDone = True
 
-                # BAD FIX!
                 while notQuiteDone:
                     for event in pg.event.get():
                         if event.type == pg.QUIT:
-                            done = True
-                            gameDone = True
-                            notQuiteDone = False
-                            break
+                            sys.exit("Game closed")
                         if event.type == pg.KEYDOWN:
                             if event.key == pg.K_RETURN:
                                 notQuiteDone = False
                                 break
 
-                print("got to end screen")
+                # print("got to end screen")
                 
 
             pg.display.flip()
