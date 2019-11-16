@@ -1,0 +1,25 @@
+\frac{x^2}{x^3 + 1}
+a^2 + b^2 = c^2
+\sqrt{x^2 + \sin(x)}
+\sin (A+B) = \sin (A) \cos (B) + \sin (B) \cos (A)
+x = \frac{-b\pm\sqrt{b^2-4ac}}{2a}
+\tan(x) = \frac{\sin(x)}{\cos(x)}
+\sin(2x) = 2\sin(x)\cos(x)
+\tan(2x) = \frac{2\tan(x)}{1-\tan^(x)}
+\sin^2(x) + \cos^2(x) = 1
+1 + \tan^2(x) = \sec^2(x)
+1 + \cot^2(x) = \csc^2(x)
+\cos(2x) = \cos^2(x) - \sin^2(x)
+f(x) = A\sin(B(x-C))+D
+a^2 = b^2 + c^2 - 2bc\cos(A)
+a^{\log_{a}b} = b
+\log_{a}a^b = b
+\log_{c}(ab) = \log_{c}a + \log_{c}b
+\log_{c}\left(\frac{a}{b}\right) = \log_{c}a - \log_{c}b
+\log_{c}a^r = r\log_{c}a
+\log_{a}b = \frac{\log_{c}b}{\log_{c}a}
+\frac{1}{\log_{a}b} = \log_{b}{a}
+(a+b)^2 = a^2 + 2ab + b^2
+(a-b)^2 = a^2 - 2ab + b^2
+a^2 - b^2 = (a+b)(a-b)
+x^2+(p+q)x+pq = (x+p)(x+q)
