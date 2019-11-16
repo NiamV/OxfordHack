@@ -4,4 +4,3 @@ def checker(expected, observed):
     else:
         return False
     
-print(checker("hello", "hello"))
