@@ -43,6 +43,9 @@ class Question:
     def handle_event(self, event):
         self.inputBox.handle_event(event)
 
+    def isCorrect(self):
+        return checker.checker(self.goal_text, self.inputBox.text)
+
 
 class InputBox:
 
@@ -147,10 +150,13 @@ def main():
                     timerText = secondsToString(counter).rjust(3)
                 if event.type == pg.KEYDOWN:
                     if event.key == pg.K_RETURN:
-                        count += 1
-                        if count >= GAME_LENGTH:
-                            gameDone = True
-                            break 
+                        if questions[count].isCorrect():
+                            count += 1
+                            if count >= GAME_LENGTH:
+                                gameDone = True
+                                break
+                            else:
+                                continue
                         # # Add next image
                         # screen.blit(eqImg[count-1], (0, 0))
 
