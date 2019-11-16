@@ -1,22 +1,24 @@
-import pygame
-pygame.init()
-screen = pygame.display.set_mode((128, 128))
-clock = pygame.time.Clock()
+import pygame as pg
 
-counter, text = 1, '1'.rjust(3)
-pygame.time.set_timer(pygame.USEREVENT, 1000)
-font = pygame.font.SysFont('Consolas', 30)
+
+pg.init()
+screen = pg.display.set_mode((128, 128))
+clock = pg.time.Clock()
+
+counter, text = 0, '0'.rjust(3)
+pg.time.set_timer(pg.USEREVENT, 1000)
+font = pg.font.SysFont('Consolas', 30)
 
 while True:
-    for e in pygame.event.get():
-        if e.type == pygame.USEREVENT: 
+    for e in pg.event.get():
+        if e.type == pg.USEREVENT: 
             counter += 1
             text = str(counter).rjust(3) if counter > 0 else 'boom!'
-        if e.type == pygame.QUIT: break
+        if e.type == pg.QUIT: break
     else:
         screen.fill((255, 255, 255))
         screen.blit(font.render(text, True, (0, 0, 0)), (32, 48))
-        pygame.display.flip()
+        pg.display.flip()
         clock.tick(60)
         continue
     break
