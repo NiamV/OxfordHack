@@ -3,6 +3,7 @@ import sys
 
 import imageMapping
 import random
+import checker
 
 pg.init()
 
