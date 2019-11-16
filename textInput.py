@@ -1,4 +1,8 @@
 import pygame as pg
+import sys
+
+import imageMapping
+import random
 
 pg.init()
 
@@ -16,10 +20,9 @@ LEFT_MARGIN = 100
 # Untested
 class Question:
 
-    def __init__(self, goal, number):
-        self.goal = goal
+    def __init__(self, number, img, img_id):
         self.color = COLOR_MAIN
-        self.rendered = FONT.render(goal, True, self.color)
+        self.img = img
 
         self.w = screenWidth - (2 * LEFT_MARGIN)
         self.h = 32
@@ -28,8 +31,8 @@ class Question:
         self.inputBox = InputBox(self.x, self.y + (2 * h), self.w, self.h)
 
     def draw(self, screen): 
-        # Draw the goal text
-        screen.blit(self.rendered, (self.x, self.y))
+        # Draw the goal image
+        screen.blit(img, (LEFT_MARGIN, LEFT_MARGIN))
 
         # Draw the input box
         self.inputBox.draw(screen)
@@ -77,15 +80,24 @@ class InputBox:
         # Blit the rect.
         pg.draw.rect(screen, self.color, self.rect, 2)
 
+def secondsToString(secs):
+    m, s = divmod(secs, 60)
+    h, m = divmod(m, 60)
+
+    return '{:d}:{:02d}:{:02d}'.format(h, m, s)
+
 def main():
     clock = pg.time.Clock()
     input_box1 = InputBox(100, 100, 140, 32)
     input_box2 = InputBox(100, 300, 140, 32)
     input_boxes = [input_box1, input_box2]
     done = False
+    imageCount = 8
+    images = []
 
     # Stopwatch setup
-    counter, timerText = 0, '0'.rjust(3)
+    counter = 0
+    timerText = secondsToString(counter).rjust(3)
     pg.time.set_timer(pg.USEREVENT, 1000)
 
     while not done:
@@ -94,7 +106,14 @@ def main():
                 done = True
             if event.type == pg.USEREVENT: 
                 counter += 1
-                timerText = str(counter).rjust(3) if counter > 0 else 'boom!'
+                timerText = secondsToString(counter).rjust(3) if counter > 0 else 'boom!'
+            if event.type == pg.KEYDOWN:
+                # niamPygame.py
+                if event.key == pg.K_SPACE:
+                    n = random.randint(1,imageCount*(imageCount-1)*(imageCount-2))
+                    images =  imageMapping.images(n, imageCount)
+                # end
+
             for box in input_boxes:
                 box.handle_event(event)
 
@@ -105,6 +124,11 @@ def main():
         screen.fill((30, 30, 30))
         for box in input_boxes:
             box.draw(screen)
+        for i in range(len(images)):
+            eq = pg.image.load("static/Eq" + str(images[i]) + ".png")
+            y = 300 * i
+            screen.blit(eq, (0,y))
+
         screen.blit(FONT.render(timerText, True, COLOR_MAIN), (screenWidth - 150, 40))
 
         pg.display.flip()
