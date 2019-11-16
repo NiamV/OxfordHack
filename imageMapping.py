@@ -1,15 +1,19 @@
 import math
 
-# Returns the 3-tuple containing the image ids (ints)
-def images(n, imageCount):
-  numbers = [i for i in range(1,imageCount+1)]
-  img1 = int(math.ceil(n / ((imageCount-1)*(imageCount-2))))
-  numbers.remove(img1)
+# Returns the n-tuple containing the image ids (ints)
 
-  img2 = numbers[int(math.ceil((n % ((imageCount-1)*(imageCount-2))) / (imageCount-2))-1)]
-  numbers.remove(img2)
+def imageId(n, imageCount, sampleSize, index):
+  num = n % (math.factorial(imageCount + 1 - index) / math.factorial(imageCount - sampleSize) )
+  den = math.factorial(8 - index) / math.factorial(8 - sampleSize)
+  return math.ceil(num / den)
 
-  img3 = numbers[int(math.ceil( (n % (imageCount-2)))-1)]
-
-  return img1, img2, img3
+def images2(n, imageCount, sampleSize):
+  numbers = [i for i in range(1, imageCount+1)]
+  indexes = []
+  for i in range(1,sampleSize + 1):
+    index = imageId(n, imageCount, sampleSize, i)
+    location = numbers[index-1]
+    indexes.append(location)
+    numbers.remove(location)
+  return indexes
 
