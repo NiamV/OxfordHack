@@ -14,6 +14,7 @@ COLOR_INACTIVE = pg.Color('lightskyblue3')
 COLOR_ACTIVE = pg.Color('dodgerblue2')
 COLOR_MAIN = pg.Color('azure')
 FONT = pg.font.Font(None, 32)
+TITLE_FONT = pg.font.Font(None, 80)
 
 LEFT_MARGIN = 100
 GAME_LENGTH = 3
@@ -126,7 +127,7 @@ def main():
     clock = pg.time.Clock()
     done = False
     
-    buttons = [ Button(LEFT_MARGIN, LEFT_MARGIN + 200 + 100 * i, screenWidth - (2 * LEFT_MARGIN), 32, "Level " + str(i+1)) for i in range(NUM_LEVELS)]
+    buttons = [ Button(LEFT_MARGIN, LEFT_MARGIN + 100 + 100 * i, 85, 32, "Level " + str(i+1)) for i in range(NUM_LEVELS) ]
     notSelected = True
     while notSelected:
         for event in pg.event.get():
@@ -134,13 +135,16 @@ def main():
                 sys.exit("Game closed")
             for button in buttons:
                 button.handle_event(event)
-                button.draw(screen)
-                if button.active:
-                    notSelected = False
 
-            
         screen.fill((30, 30, 30))
-        screen.blit(FONT.render("Rapid TeXing", True, COLOR_MAIN), (LEFT_MARGIN, LEFT_MARGIN))
+
+        for button in buttons:
+            button.draw(screen)
+            if button.active:
+                notSelected = False
+                break
+
+        screen.blit(TITLE_FONT.render("Rapid TeXing", True, COLOR_MAIN), (LEFT_MARGIN, LEFT_MARGIN))
         pg.display.flip()
         
 
