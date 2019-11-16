@@ -14,7 +14,7 @@ done = False
 
 imageCount = 8
 
-equationsFile = open("static\Equations.txt", "r").read().splitlines()
+equationsFile = open("static/Equations.txt", "r").read().splitlines()
 
 count = 0
 n = random.randint(1,imageCount*(imageCount-1)*(imageCount-2))
