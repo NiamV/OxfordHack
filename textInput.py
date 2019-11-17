@@ -25,9 +25,9 @@ NUM_LEVELS = 3
 
 # Niam's variables
 equationsFile = [
-    open("static3/Level1/Equations.txt", "r").read().splitlines(),
-    open("static3/Level2/Equations.txt", "r").read().splitlines(),
-    open("static3/Level3/Equations.txt", "r").read().splitlines() 
+    open("static/Level1/Equations.txt", "r").read().splitlines(),
+    open("static/Level2/Equations.txt", "r").read().splitlines(),
+    open("static/Level3/Equations.txt", "r").read().splitlines() 
 ]
 
 imageCount = [len(equationsFile[i]) for i in range(0,3)]
@@ -208,7 +208,7 @@ def main():
             n = random.randint(1,possibleSeeds+1)
 
         threeImages =  imageMapping.images(n, currentImageCount, GAME_LENGTH) # 3-tuple with the 3 id ints
-        eqImg = [pg.image.load("static3/Level" + str(level) +"/Eq" + str(threeImages[i]) + ".png") for i in range(0,GAME_LENGTH) ]
+        eqImg = [pg.image.load("static/Level" + str(level) +"/Eq" + str(threeImages[i]) + ".png") for i in range(0,GAME_LENGTH) ]
         eqTxt = [equationsFile[level-1][threeImages[i]-1] for i in range(0,GAME_LENGTH) ]
 
         questions = [ Question(i, eqImg[i], eqTxt[i]) for i in range(GAME_LENGTH)]
@@ -258,6 +258,7 @@ def main():
                 skipButton.draw(screen)
 
                 screen.blit(FONT.render(timerText, True, COLOR_MAIN), (screenWidth - 150, 40))
+                screen.blit(FONT.render("Seed: " + str(n), True, COLOR_MAIN), (150, 40))
             except IndexError:
                 # Shows endgame screen
                 screen.blit(FONT.render("You're done!", True, COLOR_MAIN), (LEFT_MARGIN, LEFT_MARGIN))
