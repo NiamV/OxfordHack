@@ -4,6 +4,7 @@ import sys
 import imageMapping
 import random
 import checker
+import math
 
 pg.init()
 
@@ -23,7 +24,7 @@ GAME_LENGTH = 3
 NUM_LEVELS = 3
 
 # Niam's variables
-imageCount = 8
+imageCount = [25,4,0]
 equationsFile = open("static/Equations.txt", "r").read().splitlines()
 
 # Untested
@@ -164,6 +165,7 @@ def main():
                     if button.active:
                         # Sets 'level' to the selected variable and exits the title screen
                         level = int(button.text[-1])
+                        print(level)
                         notSelected = False
                         break
 
@@ -188,15 +190,18 @@ def main():
 
         # Sets the number of problems done to 0
         count = 0
+        currentImageCount = imageCount[level-1] 
+        possibleSeeds = (math.factorial(currentImageCount) / math.factorial(currentImageCount + 1 - GAME_LENGTH))
         try:
             if (isValidSeed(int(seedInput.text))):
                 n = int(seedInput.text)
             else:
-                n = random.randint(1,imageCount*(imageCount-1)*(imageCount-2))
+                n = random.randint(1,possibleSeeds+1)
         except:
-            n = random.randint(1,imageCount*(imageCount-1)*(imageCount-2))
-        threeImages =  imageMapping.images(n, imageCount, GAME_LENGTH) # 3-tuple with the 3 id ints
-        eqImg = [pg.image.load("static/Eq" + str(threeImages[i]) + ".png") for i in range(0,GAME_LENGTH) ]
+            n = random.randint(1,possibleSeeds+1)
+
+        threeImages =  imageMapping.images(n, currentImageCount, GAME_LENGTH) # 3-tuple with the 3 id ints
+        eqImg = [pg.image.load("static3/Level" + str(level) +"/Eq" + str(threeImages[i]) + ".png") for i in range(0,GAME_LENGTH) ]
         eqTxt = [equationsFile[threeImages[i]-1] for i in range(0,GAME_LENGTH) ]
 
         questions = [ Question(i, eqImg[i], eqTxt[i]) for i in range(GAME_LENGTH)]
