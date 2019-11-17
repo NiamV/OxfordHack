@@ -55,6 +55,9 @@ class Question:
     def isCorrect(self):
         return checker.checker(self.goal_text, self.inputBox.text)
         #return True
+    
+    def amountCorrect(self):
+        return checker.amountCorrect(self.goal_text, self.inputBox.text)
 
 
 class Button:
@@ -259,6 +262,7 @@ def main():
 
                 screen.blit(FONT.render(timerText, True, COLOR_MAIN), (screenWidth - 150, 40))
                 screen.blit(FONT.render("Seed: " + str(n), True, COLOR_MAIN), (150, 40))
+                screen.blit(FONT.render(questions[count].amountCorrect(), True, (0,255,0)), (100, 350))
             except IndexError:
                 # Shows endgame screen
                 screen.blit(FONT.render("You're done!", True, COLOR_MAIN), (LEFT_MARGIN, LEFT_MARGIN))
