@@ -53,8 +53,8 @@ class Question:
         self.inputBox.handle_event(event)
 
     def isCorrect(self):
-        #return checker.checker(self.goal_text, self.inputBox.text)
-        return True
+        return checker.checker(self.goal_text, self.inputBox.text)
+        # return True
     
     def amountCorrect(self):
         return checker.amountCorrect(self.goal_text, self.inputBox.text)
@@ -159,9 +159,6 @@ def main():
         notSelected = True
         level = 0
 
-        def isValidSeed (s):
-            return s > 0 and s <= numPerms(imageCount, gameLength)
-
         # Keeps user on Title Screen until a level is selected
         while notSelected:
             for event in pg.event.get():
@@ -210,7 +207,7 @@ def main():
         currentImageCount = imageCount[level-1] 
         possibleSeeds = (math.factorial(currentImageCount) / math.factorial(currentImageCount - gameLength))
         try:
-            if (isValidSeed(int(seedInput.text))):
+            if int(seedInput.text) > 0 and int(seedInput.text) <= possibleSeeds:
                 n = int(seedInput.text)
             else:
                 n = random.randint(1,possibleSeeds+1)
