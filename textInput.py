@@ -150,6 +150,7 @@ def main():
         buttons = [ Button(LEFT_MARGIN, LEFT_MARGIN + 100 + SPACING * i, 85, FONT_SIZE, "Level " + str(i+1)) for i in range(NUM_LEVELS) ]
         seedY = buttons[-1].rect.y + FONT_SIZE + SPACING
         seedInput = InputBox(LEFT_MARGIN + 70, seedY - 5, 30, FONT_SIZE)
+        gameLengthInput = InputBox(LEFT_MARGIN + 170, seedY + FONT_SIZE + SPACING, 30, FONT_SIZE, "3")
         notSelected = True
         level = 0
 
@@ -162,6 +163,7 @@ def main():
                 if event.type == pg.QUIT:
                     sys.exit("Game closed")
                 seedInput.handle_event(event)
+                gameLengthInput.handle_event(event)
                 for button in buttons:
                     button.handle_event(event)
                     if button.active:
@@ -177,8 +179,11 @@ def main():
             # Blits game name and buttons
             screen.blit(TITLE_FONT.render("Rapid TeXing", True, COLOR_MAIN), (LEFT_MARGIN, LEFT_MARGIN))
             screen.blit(FONT.render("Seed: ", True, COLOR_MAIN), (LEFT_MARGIN, seedY))
+            screen.blit(FONT.render("Game Length: ", True, COLOR_MAIN), (LEFT_MARGIN, seedY + FONT_SIZE + SPACING))
             seedInput.update()
             seedInput.draw(screen)
+            gameLengthInput.update()
+            gameLengthInput.draw(screen)
             for button in buttons:
                 button.draw(screen)
 
