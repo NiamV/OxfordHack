@@ -25,7 +25,11 @@ NUM_LEVELS = 3
 
 # Niam's variables
 imageCount = [25,4,0]
-equationsFile = open("static/Equations.txt", "r").read().splitlines()
+equationsFile = [
+    open("static3/Level1/Equations.txt", "r").read().splitlines(),
+    open("static3/Level2/Equations.txt", "r").read().splitlines(),
+    open("static3/Level3/Equations.txt", "r").read().splitlines() 
+]
 
 # Untested
 class Question:
@@ -202,7 +206,7 @@ def main():
 
         threeImages =  imageMapping.images(n, currentImageCount, GAME_LENGTH) # 3-tuple with the 3 id ints
         eqImg = [pg.image.load("static3/Level" + str(level) +"/Eq" + str(threeImages[i]) + ".png") for i in range(0,GAME_LENGTH) ]
-        eqTxt = [equationsFile[threeImages[i]-1] for i in range(0,GAME_LENGTH) ]
+        eqTxt = [equationsFile[level-1][threeImages[i]-1] for i in range(0,GAME_LENGTH) ]
 
         questions = [ Question(i, eqImg[i], eqTxt[i]) for i in range(GAME_LENGTH)]
 
