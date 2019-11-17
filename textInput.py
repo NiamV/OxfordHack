@@ -202,12 +202,12 @@ def main():
 
         # Sets the number of problems done to 0
         count = 0
-        GAME_LENGTH = int(gameLengthInput.text)
+        gameLength = int(gameLengthInput.text)
         numCorrect = 0
         currentImageCount = imageCount[level-1] 
         possibleSeeds = (math.factorial(currentImageCount) / math.factorial(currentImageCount - gameLength))
         try:
-            if (isValidSeed(int(seedInput.text))):
+            if int(seedInput.text) > 0 and int(seedInput.text) <= possibleSeeds :
                 n = int(seedInput.text)
             else:
                 n = random.randint(1,possibleSeeds+1)
@@ -224,10 +224,9 @@ def main():
             scaleFactor = min((screenWidth - 2.0 * LEFT_MARGIN)/imgWidth, 150.0/imgHeight)
             return pg.transform.scale(img, (int(imgWidth * scaleFactor), int(imgHeight * scaleFactor)))
 
-        eqImg = map (scale, eqImg) # Updates eqImg with scaled image versions
         eqTxt = [equationsFile[level-1][threeImages[i]-1] for i in range(0,gameLength) ]
 
-        questions = [ Question(i, eqImg[i], eqTxt[i]) for i in range(gameLength)]
+        questions = [ Question(i, eqImg[i], eqTxt[i]) for i in range(0,gameLength)]
         skipButton = Button(LEFT_MARGIN, screenHeight - 200, 85, FONT_SIZE, "SKIP (+1 minute)")
 
         gameDone = False
