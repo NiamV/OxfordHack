@@ -4,7 +4,7 @@ import math
 
 def imageId(n, imageCount, sampleSize, index):
   num = n % (math.factorial(imageCount + 1 - index) / math.factorial(imageCount - sampleSize) )
-  den = math.factorial(8 - index) / math.factorial(8 - sampleSize)
+  den = math.factorial(imageCount - index) / math.factorial(imageCount - sampleSize)
   return math.ceil(num / den)
 
 def images(n, imageCount, sampleSize):
