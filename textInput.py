@@ -273,8 +273,8 @@ def main():
                 skipButton.update()
                 skipButton.draw(screen)
 
-                screen.blit(FONT.render(timerText, True, COLOR_MAIN), (screenWidth - 150, 40))
-                screen.blit(FONT.render("Seed: " + str(n), True, COLOR_MAIN), (150, 40))
+                screen.blit(FONT.render(timerText, True, COLOR_MAIN), (screenWidth - 150, LEFT_MARGIN - 40))
+                screen.blit(FONT.render("Seed: " + str(n), True, COLOR_MAIN), (LEFT_MARGIN, LEFT_MARGIN - 40))
                 screen.blit(FONT.render(questions[count].amountCorrect(), True, (0,255,0)), (100, 350))
             except IndexError:
                 # Shows endgame screen
