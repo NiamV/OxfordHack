@@ -135,9 +135,8 @@ class InputBox:
 
 def secondsToString(secs):
     m, s = divmod(secs, 60)
-    h, m = divmod(m, 60)
 
-    return '{:d}:{:02d}:{:02d}'.format(h, m, s)
+    return '{:d}:{:02d}'.format(m, s)
 
 def numPerms (n, p):
     return math.factorial(n) / math.factorial(n-p)
