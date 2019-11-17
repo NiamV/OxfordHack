@@ -143,6 +143,9 @@ def numPerms (n, p):
 
 def main():
     clock = pg.time.Clock()
+    musicPlayer = pg.mixer
+    musicPlayer.init()
+    musicPlayer.music.set_volume(1.0)
     done = False
     
     # Ensures that the game does not close before the user tells it to
@@ -217,6 +220,10 @@ def main():
         threeImages =  imageMapping.images(n, currentImageCount, gameLength) # 3-tuple with the 3 id ints
         eqImg = [ pg.image.load("static/Level" + str(level) +"/Eq" + str(threeImages[i]) + ".png") for i in range(0,gameLength) ]
 
+        # Loads the music
+        musicPlayer.music.load("Music/countdown" + str(count+1) + ".wav")
+        musicPlayer.music.play()
+
         # Returns an image scaled to be at most (screenWidth - 2.0 * LEFT_MARGIN) wide and 150 high
         def scale(img):
             imgWidth = img.get_rect().width
@@ -244,14 +251,24 @@ def main():
                         if questions[count].isCorrect():
                             count += 1
                             numCorrect += 1
+
                             if count >= gameLength:
                                 endtime = secondsToString(counter).rjust(3)
                                 gameDone = True
+                                musicPlayer = pg.mixer
+                                musicPlayer.init()
+                                musicPlayer.music.load("Music/countdownFinish.wav")
+                                musicPlayer.music.play()
                                 break
                             else:
-                                continue
-                        # # Add next image
-                        # screen.blit(eqImg[count-1], (0, 0))
+                                try:
+                                    musicPlayer = pg.mixer
+                                    musicPlayer.init()
+                                    musicPlayer.music.load("Music/countdown" + str(count+1) + ".wav")
+                                    musicPlayer.music.play()
+                                except:
+                                    print("Couldn't load music")
+                                    continue
 
                 questions[count].inputBox.handle_event(event)
                 skipButton.handle_event(event)
@@ -308,6 +325,7 @@ def main():
             pg.display.flip()
             clock.tick(30)
 
+        musicPlayer.music.pause()
 
 if __name__ == '__main__':
     main()
