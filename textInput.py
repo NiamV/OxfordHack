@@ -194,6 +194,7 @@ def main():
 
         # Sets the number of problems done to 0
         count = 0
+        numCorrect = 0
         currentImageCount = imageCount[level-1] 
         possibleSeeds = (math.factorial(currentImageCount) / math.factorial(currentImageCount + 1 - GAME_LENGTH))
         try:
@@ -224,6 +225,7 @@ def main():
                     if event.key == pg.K_RETURN:
                         if questions[count].isCorrect():
                             count += 1
+                            numCorrect += 1
                             if count >= GAME_LENGTH:
                                 endtime = secondsToString(counter).rjust(3)
                                 gameDone = True
@@ -242,8 +244,9 @@ def main():
             if skipButton.active:
                 count += 1 # Moves onto next question
                 counter += 60 # Increases stopwatch count by 1 min (60 seconds)
+                timerText = secondsToString(counter).rjust(3)
                 if count >= GAME_LENGTH: # Checks if game is finished
-                    endtime = secondsToString(counter).rjust(3)
+                    endtime = timerText
                     gameDone = True
                 skipButton.active = False
 
@@ -257,8 +260,11 @@ def main():
                 screen.blit(FONT.render(timerText, True, COLOR_MAIN), (screenWidth - 150, 40))
             except IndexError:
                 # Shows endgame screen
-                screen.blit(FONT.render("You're done!", True, COLOR_MAIN), (LEFT_MARGIN, LEFT_MARGIN))
-                screen.blit(FONT.render("You took this long: " + endtime, True, COLOR_MAIN), (LEFT_MARGIN, LEFT_MARGIN + 100))
+                screen.blit(TITLE_FONT.render("Level completed!", True, COLOR_MAIN), (LEFT_MARGIN, LEFT_MARGIN))
+                screen.blit(FONT.render("Time: " + endtime, True, COLOR_INACTIVE), (LEFT_MARGIN, LEFT_MARGIN + 200))
+                screen.blit(FONT.render("Score: " + str(numCorrect) + "/" + str(GAME_LENGTH), True, COLOR_INACTIVE), (LEFT_MARGIN, LEFT_MARGIN + 240))
+                screen.blit(FONT.render("Press ENTER to return to the home page", True, COLOR_ACTIVE), (LEFT_MARGIN, LEFT_MARGIN + 440))
+                
                 pg.display.flip()
                 notQuiteDone = True
 
