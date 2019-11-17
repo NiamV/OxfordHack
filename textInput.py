@@ -25,9 +25,9 @@ NUM_LEVELS = 3
 
 # Niam's variables
 equationsFile = [
-    open("static3/Level1/Equations.txt", "r").read().splitlines(),
-    open("static3/Level2/Equations.txt", "r").read().splitlines(),
-    open("static3/Level3/Equations.txt", "r").read().splitlines() 
+    open("static/Level1/Equations.txt", "r").read().splitlines(),
+    open("static/Level2/Equations.txt", "r").read().splitlines(),
+    open("static/Level3/Equations.txt", "r").read().splitlines() 
 ]
 
 imageCount = [len(equationsFile[i]) for i in range(0,3)]
@@ -53,8 +53,11 @@ class Question:
         self.inputBox.handle_event(event)
 
     def isCorrect(self):
-        #return checker.checker(self.goal_text, self.inputBox.text)
-        return True
+        return checker.checker(self.goal_text, self.inputBox.text)
+        #return True
+    
+    def amountCorrect(self):
+        return checker.amountCorrect(self.goal_text, self.inputBox.text)
 
 
 class Button:
@@ -150,6 +153,7 @@ def main():
         buttons = [ Button(LEFT_MARGIN, LEFT_MARGIN + 100 + SPACING * i, 85, FONT_SIZE, "Level " + str(i+1)) for i in range(NUM_LEVELS) ]
         seedY = buttons[-1].rect.y + FONT_SIZE + SPACING
         seedInput = InputBox(LEFT_MARGIN + 70, seedY - 5, 30, FONT_SIZE)
+        gameLengthInput = InputBox(LEFT_MARGIN + 170, seedY + FONT_SIZE + SPACING, 30, FONT_SIZE, "3")
         notSelected = True
         level = 0
 
@@ -162,6 +166,7 @@ def main():
                 if event.type == pg.QUIT:
                     sys.exit("Game closed")
                 seedInput.handle_event(event)
+                gameLengthInput.handle_event(event)
                 for button in buttons:
                     button.handle_event(event)
                     if button.active:
@@ -177,8 +182,11 @@ def main():
             # Blits game name and buttons
             screen.blit(TITLE_FONT.render("Rapid TeXing", True, COLOR_MAIN), (LEFT_MARGIN, LEFT_MARGIN))
             screen.blit(FONT.render("Seed: ", True, COLOR_MAIN), (LEFT_MARGIN, seedY))
+            screen.blit(FONT.render("Game Length: ", True, COLOR_MAIN), (LEFT_MARGIN, seedY + FONT_SIZE + SPACING))
             seedInput.update()
             seedInput.draw(screen)
+            gameLengthInput.update()
+            gameLengthInput.draw(screen)
             for button in buttons:
                 button.draw(screen)
 
@@ -204,7 +212,7 @@ def main():
             n = random.randint(1,possibleSeeds+1)
 
         threeImages =  imageMapping.images(n, currentImageCount, GAME_LENGTH) # 3-tuple with the 3 id ints
-        eqImg = [ pg.image.load("static3/Level" + str(level) +"/Eq" + str(threeImages[i]) + ".png") for i in range(0,GAME_LENGTH) ]
+        eqImg = [ pg.image.load("static/Level" + str(level) +"/Eq" + str(threeImages[i]) + ".png") for i in range(0,GAME_LENGTH) ]
 
         # Returns an image scaled to be at most (screenWidth - 2.0 * LEFT_MARGIN) wide and 150 high
         def scale(img):
@@ -265,6 +273,8 @@ def main():
                 skipButton.draw(screen)
 
                 screen.blit(FONT.render(timerText, True, COLOR_MAIN), (screenWidth - 150, 40))
+                screen.blit(FONT.render("Seed: " + str(n), True, COLOR_MAIN), (150, 40))
+                screen.blit(FONT.render(questions[count].amountCorrect(), True, (0,255,0)), (100, 350))
             except IndexError:
                 # Shows endgame screen
                 screen.blit(TITLE_FONT.render("Level completed!", True, COLOR_MAIN), (LEFT_MARGIN, LEFT_MARGIN))

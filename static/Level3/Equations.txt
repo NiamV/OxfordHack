@@ -1,0 +1,7 @@
+\int_{0}^{10}{x^2 dx}
+\sum_{n=0}^{\infty}\frac{1}{x^2} = \frac{\pi^2}{6}
+\prod_{p \in primes} \frac{1}{p}
+\sum_{k=0}^{\infty}\frac{x^k}{k!} = e^x
+\sum_{n=1}^{\infty}\frac{1}{n^s} = \prod_{p\in{primes}}\frac{1}{1-\frac{1}{p^s}}
+\varphi = 1 + \frac{1}{1+\frac{1}{1+\frac{1}{\varphi}}}
+G_{\mu\nu} = 8\pi{G}(T_{\mu\nu}+\rho_{\Lambda}g_{\mu\nu})
