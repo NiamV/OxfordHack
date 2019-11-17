@@ -277,7 +277,6 @@ def main():
 
                 screen.blit(FONT.render(timerText, True, COLOR_MAIN), (screenWidth - 150, LEFT_MARGIN - 40))
                 screen.blit(FONT.render("Seed: " + str(n), True, COLOR_MAIN), (LEFT_MARGIN, LEFT_MARGIN - 40))
-                screen.blit(FONT.render(questions[count].amountCorrect(), True, (0,255,0)), (100, 350))
 
                 correctPart = FONT.render(questions[count].amountCorrect()[0], True, (0,255,0))
                 incorrectPart = FONT.render(questions[count].amountCorrect()[1], True, (255,0,0))
