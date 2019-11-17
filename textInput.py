@@ -20,7 +20,7 @@ FONT = pg.font.Font(None, FONT_SIZE)
 TITLE_FONT = pg.font.Font(None, 80)
 
 LEFT_MARGIN = 100
-GAME_LENGTH = 3
+gameLength = 3
 NUM_LEVELS = 3
 
 # Niam's variables
@@ -135,9 +135,8 @@ class InputBox:
 
 def secondsToString(secs):
     m, s = divmod(secs, 60)
-    h, m = divmod(m, 60)
 
-    return '{:d}:{:02d}:{:02d}'.format(h, m, s)
+    return '{:d}:{:02d}'.format(m, s)
 
 def numPerms (n, p):
     return math.factorial(n) / math.factorial(n-p)
@@ -158,7 +157,7 @@ def main():
         level = 0
 
         def isValidSeed (s):
-            return s > 0 and s <= numPerms(imageCount, GAME_LENGTH)
+            return s > 0 and s <= numPerms(imageCount, gameLength)
 
         # Keeps user on Title Screen until a level is selected
         while notSelected:
@@ -193,6 +192,9 @@ def main():
             # Refreshes display
             pg.display.flip()
 
+        # Updates gameLength based on the user's input
+        gameLength = int(gameLengthInput.text)
+
         # Stopwatch setup
         counter = 0
         timerText = secondsToString(counter).rjust(3)
@@ -201,8 +203,9 @@ def main():
         # Sets the number of problems done to 0
         count = 0
         GAME_LENGTH = int(gameLengthInput.text)
+        numCorrect = 0
         currentImageCount = imageCount[level-1] 
-        possibleSeeds = (math.factorial(currentImageCount) / math.factorial(currentImageCount - GAME_LENGTH))
+        possibleSeeds = (math.factorial(currentImageCount) / math.factorial(currentImageCount - gameLength))
         try:
             if (isValidSeed(int(seedInput.text))):
                 n = int(seedInput.text)
@@ -211,11 +214,20 @@ def main():
         except:
             n = random.randint(1,possibleSeeds+1)
 
-        threeImages =  imageMapping.images(n, currentImageCount, GAME_LENGTH) # 3-tuple with the 3 id ints
-        eqImg = [pg.image.load("static/Level" + str(level) +"/Eq" + str(threeImages[i]) + ".png") for i in range(0,GAME_LENGTH) ]
-        eqTxt = [equationsFile[level-1][threeImages[i]-1] for i in range(0,GAME_LENGTH) ]
+        threeImages =  imageMapping.images(n, currentImageCount, gameLength) # 3-tuple with the 3 id ints
+        eqImg = [ pg.image.load("static/Level" + str(level) +"/Eq" + str(threeImages[i]) + ".png") for i in range(0,gameLength) ]
 
-        questions = [ Question(i, eqImg[i], eqTxt[i]) for i in range(GAME_LENGTH)]
+        # Returns an image scaled to be at most (screenWidth - 2.0 * LEFT_MARGIN) wide and 150 high
+        def scale(img):
+            imgWidth = img.get_rect().width
+            imgHeight = img.get_rect().height
+            scaleFactor = min((screenWidth - 2.0 * LEFT_MARGIN)/imgWidth, 150.0/imgHeight)
+            return pg.transform.scale(img, (int(imgWidth * scaleFactor), int(imgHeight * scaleFactor)))
+
+        eqImg = map (scale, eqImg) # Updates eqImg with scaled image versions
+        eqTxt = [equationsFile[level-1][threeImages[i]-1] for i in range(0,gameLength) ]
+
+        questions = [ Question(i, eqImg[i], eqTxt[i]) for i in range(gameLength)]
         skipButton = Button(LEFT_MARGIN, screenHeight - 200, 85, FONT_SIZE, "SKIP (+1 minute)")
 
         gameDone = False
@@ -231,7 +243,8 @@ def main():
                     if event.key == pg.K_RETURN:
                         if questions[count].isCorrect():
                             count += 1
-                            if count >= GAME_LENGTH:
+                            numCorrect += 1
+                            if count >= gameLength:
                                 endtime = secondsToString(counter).rjust(3)
                                 gameDone = True
                                 break
@@ -249,8 +262,9 @@ def main():
             if skipButton.active:
                 count += 1 # Moves onto next question
                 counter += 60 # Increases stopwatch count by 1 min (60 seconds)
-                if count >= GAME_LENGTH: # Checks if game is finished
-                    endtime = secondsToString(counter).rjust(3)
+                timerText = secondsToString(counter).rjust(3)
+                if count >= gameLength: # Checks if game is finished
+                    endtime = timerText
                     gameDone = True
                 skipButton.active = False
 
@@ -271,8 +285,11 @@ def main():
                 screen.blit(incorrectPart, (100 + correctPart.get_width(), 350))
             except IndexError:
                 # Shows endgame screen
-                screen.blit(FONT.render("You're done!", True, COLOR_MAIN), (LEFT_MARGIN, LEFT_MARGIN))
-                screen.blit(FONT.render("You took this long: " + endtime, True, COLOR_MAIN), (LEFT_MARGIN, LEFT_MARGIN + 100))
+                screen.blit(TITLE_FONT.render("Level completed!", True, COLOR_MAIN), (LEFT_MARGIN, LEFT_MARGIN))
+                screen.blit(FONT.render("Time: " + endtime, True, COLOR_INACTIVE), (LEFT_MARGIN, LEFT_MARGIN + 200))
+                screen.blit(FONT.render("Score: " + str(numCorrect) + "/" + str(gameLength), True, COLOR_INACTIVE), (LEFT_MARGIN, LEFT_MARGIN + 240))
+                screen.blit(FONT.render("Press ENTER to return to the home page", True, COLOR_ACTIVE), (LEFT_MARGIN, LEFT_MARGIN + 440))
+                
                 pg.display.flip()
                 notQuiteDone = True
 
