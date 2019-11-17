@@ -200,6 +200,7 @@ def main():
         eqTxt = [equationsFile[threeImages[i]-1] for i in range(0,GAME_LENGTH) ]
 
         questions = [ Question(i, eqImg[i], eqTxt[i]) for i in range(GAME_LENGTH)]
+        skipButton = Button(LEFT_MARGIN, screenHeight - 200, 85, FONT_SIZE, "SKIP (+1 minute)")
 
         gameDone = False
 
@@ -215,8 +216,7 @@ def main():
                         if questions[count].isCorrect():
                             count += 1
                             if count >= GAME_LENGTH:
-                                endtime = timerText
-                                print(endtime)
+                                endtime = secondsToString(counter).rjust(3)
                                 gameDone = True
                                 break
                             else:
@@ -225,21 +225,31 @@ def main():
                         # screen.blit(eqImg[count-1], (0, 0))
 
                 questions[count].inputBox.handle_event(event)
+                skipButton.handle_event(event)
             
             # UI Updates
             screen.fill((30, 30, 30))
 
+            if skipButton.active:
+                count += 1 # Moves onto next question
+                counter += 60 # Increases stopwatch count by 1 min (60 seconds)
+                if count >= GAME_LENGTH: # Checks if game is finished
+                    endtime = secondsToString(counter).rjust(3)
+                    gameDone = True
+                skipButton.active = False
 
             try:
                 # Refreshes inputbox size, clears screen, and displays question and timer
                 questions[count].inputBox.update()
                 questions[count].draw(screen)
+                skipButton.update()
+                skipButton.draw(screen)
 
                 screen.blit(FONT.render(timerText, True, COLOR_MAIN), (screenWidth - 150, 40))
             except IndexError:
                 # Shows endgame screen
                 screen.blit(FONT.render("You're done!", True, COLOR_MAIN), (LEFT_MARGIN, LEFT_MARGIN))
-                screen.blit(FONT.render("You took this " + endtime, True, COLOR_MAIN), (LEFT_MARGIN, LEFT_MARGIN + 100))
+                screen.blit(FONT.render("You took this long: " + endtime, True, COLOR_MAIN), (LEFT_MARGIN, LEFT_MARGIN + 100))
                 pg.display.flip()
                 notQuiteDone = True
 
