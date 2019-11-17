@@ -20,7 +20,7 @@ FONT = pg.font.Font(None, FONT_SIZE)
 TITLE_FONT = pg.font.Font(None, 80)
 
 LEFT_MARGIN = 100
-GAME_LENGTH = 3
+gameLength = 3
 NUM_LEVELS = 3
 
 # Niam's variables
@@ -158,7 +158,7 @@ def main():
         level = 0
 
         def isValidSeed (s):
-            return s > 0 and s <= numPerms(imageCount, GAME_LENGTH)
+            return s > 0 and s <= numPerms(imageCount, gameLength)
 
         # Keeps user on Title Screen until a level is selected
         while notSelected:
@@ -193,16 +193,18 @@ def main():
             # Refreshes display
             pg.display.flip()
 
+        # Updates gameLength based on the user's input
+        gameLength = int(gameLengthInput.text)
+
         # Stopwatch setup
         counter = 0
         timerText = secondsToString(counter).rjust(3)
         pg.time.set_timer(pg.USEREVENT, 1000)
 
-        # Sets the number of problems done to 0
-        count = 0
+        count = 0 # Sets the number of problems done to 0
         numCorrect = 0
         currentImageCount = imageCount[level-1] 
-        possibleSeeds = (math.factorial(currentImageCount) / math.factorial(currentImageCount - GAME_LENGTH))
+        possibleSeeds = (math.factorial(currentImageCount) / math.factorial(currentImageCount - gameLength))
         try:
             if (isValidSeed(int(seedInput.text))):
                 n = int(seedInput.text)
@@ -211,8 +213,8 @@ def main():
         except:
             n = random.randint(1,possibleSeeds+1)
 
-        threeImages =  imageMapping.images(n, currentImageCount, GAME_LENGTH) # 3-tuple with the 3 id ints
-        eqImg = [ pg.image.load("static/Level" + str(level) +"/Eq" + str(threeImages[i]) + ".png") for i in range(0,GAME_LENGTH) ]
+        threeImages =  imageMapping.images(n, currentImageCount, gameLength) # 3-tuple with the 3 id ints
+        eqImg = [ pg.image.load("static/Level" + str(level) +"/Eq" + str(threeImages[i]) + ".png") for i in range(0,gameLength) ]
 
         # Returns an image scaled to be at most (screenWidth - 2.0 * LEFT_MARGIN) wide and 150 high
         def scale(img):
@@ -222,9 +224,9 @@ def main():
             return pg.transform.scale(img, (int(imgWidth * scaleFactor), int(imgHeight * scaleFactor)))
 
         eqImg = map (scale, eqImg) # Updates eqImg with scaled image versions
-        eqTxt = [equationsFile[level-1][threeImages[i]-1] for i in range(0,GAME_LENGTH) ]
+        eqTxt = [equationsFile[level-1][threeImages[i]-1] for i in range(0,gameLength) ]
 
-        questions = [ Question(i, eqImg[i], eqTxt[i]) for i in range(GAME_LENGTH)]
+        questions = [ Question(i, eqImg[i], eqTxt[i]) for i in range(gameLength)]
         skipButton = Button(LEFT_MARGIN, screenHeight - 200, 85, FONT_SIZE, "SKIP (+1 minute)")
 
         gameDone = False
@@ -241,7 +243,7 @@ def main():
                         if questions[count].isCorrect():
                             count += 1
                             numCorrect += 1
-                            if count >= GAME_LENGTH:
+                            if count >= gameLength:
                                 endtime = secondsToString(counter).rjust(3)
                                 gameDone = True
                                 break
@@ -260,7 +262,7 @@ def main():
                 count += 1 # Moves onto next question
                 counter += 60 # Increases stopwatch count by 1 min (60 seconds)
                 timerText = secondsToString(counter).rjust(3)
-                if count >= GAME_LENGTH: # Checks if game is finished
+                if count >= gameLength: # Checks if game is finished
                     endtime = timerText
                     gameDone = True
                 skipButton.active = False
@@ -279,7 +281,7 @@ def main():
                 # Shows endgame screen
                 screen.blit(TITLE_FONT.render("Level completed!", True, COLOR_MAIN), (LEFT_MARGIN, LEFT_MARGIN))
                 screen.blit(FONT.render("Time: " + endtime, True, COLOR_INACTIVE), (LEFT_MARGIN, LEFT_MARGIN + 200))
-                screen.blit(FONT.render("Score: " + str(numCorrect) + "/" + str(GAME_LENGTH), True, COLOR_INACTIVE), (LEFT_MARGIN, LEFT_MARGIN + 240))
+                screen.blit(FONT.render("Score: " + str(numCorrect) + "/" + str(gameLength), True, COLOR_INACTIVE), (LEFT_MARGIN, LEFT_MARGIN + 240))
                 screen.blit(FONT.render("Press ENTER to return to the home page", True, COLOR_ACTIVE), (LEFT_MARGIN, LEFT_MARGIN + 440))
                 
                 pg.display.flip()
