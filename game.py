@@ -224,6 +224,7 @@ def main():
             scaleFactor = min((screenWidth - 2.0 * LEFT_MARGIN)/imgWidth, 150.0/imgHeight)
             return pg.transform.scale(img, (int(imgWidth * scaleFactor), int(imgHeight * scaleFactor)))
 
+        eqImg = map (scale, eqImg) # Updates eqImg with scaled image versions
         eqTxt = [equationsFile[level-1][threeImages[i]-1] for i in range(0,gameLength) ]
 
         questions = [ Question(i, eqImg[i], eqTxt[i]) for i in range(0,gameLength)]
