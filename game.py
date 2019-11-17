@@ -53,8 +53,8 @@ class Question:
         self.inputBox.handle_event(event)
 
     def isCorrect(self):
-        #return checker.checker(self.goal_text, self.inputBox.text)
-        return True
+        return checker.checker(self.goal_text, self.inputBox.text)
+        # return True
     
     def amountCorrect(self):
         return checker.amountCorrect(self.goal_text, self.inputBox.text)
