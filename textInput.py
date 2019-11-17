@@ -53,8 +53,8 @@ class Question:
         self.inputBox.handle_event(event)
 
     def isCorrect(self):
-        return checker.checker(self.goal_text, self.inputBox.text)
-        #return True
+        #return checker.checker(self.goal_text, self.inputBox.text)
+        return True
     
     def amountCorrect(self):
         return checker.amountCorrect(self.goal_text, self.inputBox.text)
@@ -200,7 +200,9 @@ def main():
         timerText = secondsToString(counter).rjust(3)
         pg.time.set_timer(pg.USEREVENT, 1000)
 
-        count = 0 # Sets the number of problems done to 0
+        # Sets the number of problems done to 0
+        count = 0
+        GAME_LENGTH = int(gameLengthInput.text)
         numCorrect = 0
         currentImageCount = imageCount[level-1] 
         possibleSeeds = (math.factorial(currentImageCount) / math.factorial(currentImageCount - gameLength))
@@ -276,6 +278,12 @@ def main():
                 screen.blit(FONT.render(timerText, True, COLOR_MAIN), (screenWidth - 150, LEFT_MARGIN - 40))
                 screen.blit(FONT.render("Seed: " + str(n), True, COLOR_MAIN), (LEFT_MARGIN, LEFT_MARGIN - 40))
                 screen.blit(FONT.render(questions[count].amountCorrect(), True, (0,255,0)), (100, 350))
+
+                correctPart = FONT.render(questions[count].amountCorrect()[0], True, (0,255,0))
+                incorrectPart = FONT.render(questions[count].amountCorrect()[1], True, (255,0,0))
+
+                screen.blit(correctPart, (100, 350))
+                screen.blit(incorrectPart, (100 + correctPart.get_width(), 350))
             except IndexError:
                 # Shows endgame screen
                 screen.blit(TITLE_FONT.render("Level completed!", True, COLOR_MAIN), (LEFT_MARGIN, LEFT_MARGIN))
