@@ -204,7 +204,16 @@ def main():
             n = random.randint(1,possibleSeeds+1)
 
         threeImages =  imageMapping.images(n, currentImageCount, GAME_LENGTH) # 3-tuple with the 3 id ints
-        eqImg = [pg.image.load("static3/Level" + str(level) +"/Eq" + str(threeImages[i]) + ".png") for i in range(0,GAME_LENGTH) ]
+        eqImg = [ pg.image.load("static3/Level" + str(level) +"/Eq" + str(threeImages[i]) + ".png") for i in range(0,GAME_LENGTH) ]
+
+        # Returns an image scaled to be at most (screenWidth - 2.0 * LEFT_MARGIN) wide and 150 high
+        def scale(img):
+            imgWidth = img.get_rect().width
+            imgHeight = img.get_rect().height
+            scaleFactor = min((screenWidth - 2.0 * LEFT_MARGIN)/imgWidth, 150.0/imgHeight)
+            return pg.transform.scale(img, (int(imgWidth * scaleFactor), int(imgHeight * scaleFactor)))
+
+        eqImg = map (scale, eqImg) # Updates eqImg with scaled image versions
         eqTxt = [equationsFile[level-1][threeImages[i]-1] for i in range(0,GAME_LENGTH) ]
 
         questions = [ Question(i, eqImg[i], eqTxt[i]) for i in range(GAME_LENGTH)]
