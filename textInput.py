@@ -24,12 +24,13 @@ GAME_LENGTH = 3
 NUM_LEVELS = 3
 
 # Niam's variables
-imageCount = [25,4,0]
 equationsFile = [
     open("static3/Level1/Equations.txt", "r").read().splitlines(),
     open("static3/Level2/Equations.txt", "r").read().splitlines(),
     open("static3/Level3/Equations.txt", "r").read().splitlines() 
 ]
+
+imageCount = [len(equationsFile[i]) for i in range(0,3)]
 
 # Untested
 class Question:
@@ -52,8 +53,8 @@ class Question:
         self.inputBox.handle_event(event)
 
     def isCorrect(self):
-        return checker.checker(self.goal_text, self.inputBox.text)
-        #return True
+        #return checker.checker(self.goal_text, self.inputBox.text)
+        return True
 
 
 class Button:
@@ -136,10 +137,7 @@ def secondsToString(secs):
     return '{:d}:{:02d}:{:02d}'.format(h, m, s)
 
 def numPerms (n, p):
-    if n - p == 0:
-        return 1
-    else:
-        return n * numPerms(n-1, p)
+    return math.factorial(n) / math.factorial(n-p)
 
 def main():
     clock = pg.time.Clock()
@@ -195,7 +193,7 @@ def main():
         # Sets the number of problems done to 0
         count = 0
         currentImageCount = imageCount[level-1] 
-        possibleSeeds = (math.factorial(currentImageCount) / math.factorial(currentImageCount + 1 - GAME_LENGTH))
+        possibleSeeds = (math.factorial(currentImageCount) / math.factorial(currentImageCount - GAME_LENGTH))
         try:
             if (isValidSeed(int(seedInput.text))):
                 n = int(seedInput.text)
