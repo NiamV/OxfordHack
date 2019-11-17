@@ -24,5 +24,7 @@ def amountCorrect(expected, observed):
         except:
             break
 
-    return correctpart
+    incorrectpart = observed[len(correctpart):]
+
+    return correctpart, incorrectpart
 
